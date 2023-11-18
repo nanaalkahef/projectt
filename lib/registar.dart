@@ -9,6 +9,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:projectt/help/botton.dart';
 import 'package:projectt/help/faild.dart';
+import 'package:projectt/showproudect.dart';
 
 
 
@@ -112,7 +113,7 @@ showeyes(){
          
                     
      SizedBox(height: 20,),
-              botton(tb: " creat account   ", tap:  ()async {})])  ),
+              botton(tb: " creat account   ", tap:  ()async {Get.off(showproduect());})])  ),
           )
       )
     ;}}

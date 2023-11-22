@@ -7,6 +7,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:projectt/description.dart';
 import 'package:projectt/help/api/getproduect.dart';
 import 'package:projectt/help/api/produect.dart';
+import 'package:projectt/main.dart';
 
 class showproduect extends StatelessWidget{
 
@@ -21,7 +22,8 @@ class showproduect extends StatelessWidget{
 
  
  title: Text("Medicine",style: TextStyle(fontWeight: FontWeight.bold,fontSize:20),),
- actions: [IconButton(onPressed: (() {
+ actions: [IconButton(onPressed: (() {shardpre!.clear();
+   Get.offNamed("/login");
  }), icon:Icon(Icons.menu))],
  ),
    body: Column(
@@ -57,10 +59,10 @@ class showproduect extends StatelessWidget{
           )])
           ),
           Container(height: 160,
-            width: 200,
+            width:  200,
             margin: EdgeInsets.symmetric(horizontal: 10,vertical: 20),
-              child: Image.network(p[index].image,height: 40,width: 50,)),
-            Container(width: 340,height: 160,
+              child: Image.network(p[index].image,height: MediaQuery.of(context).size.height*0.4,width: MediaQuery.of(context).size.width*0.5,)),
+            Container(width: 340,height:160,
               child: Column(mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
                 children: [

@@ -9,8 +9,9 @@ import 'package:get_storage/get_storage.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:projectt/help/botton.dart';
 import 'package:projectt/help/faild.dart';
+import 'package:projectt/main.dart';
 import 'package:projectt/showproudect.dart';
-
+import 'package:http/http.dart' as http;
 
 
 class registar extends StatefulWidget  {
@@ -45,6 +46,48 @@ showeyes(){
     animationController?.forward();}
 
 
+    registar()async{
+      final response =await http.post(Uri.parse("testpharma-project.000webhostapp.com/api/register"),body: {
+
+        "phone":_ph.text,
+        "name":_na.text,
+        "password":_pa.text
+      });
+      final data=jsonDecode(response.body);
+
+       if (response.statusCode == 201){
+                  showDialog(context: context, builder:(context) => AlertDialog(
+                   title: Text(" informating ",style: TextStyle(color: Colors.green)),
+                   content: Text("creat Success"),
+                   actions: [TextButton(onPressed:() { Get.off(showproduect())  ;}, child: Text("Ok"))],
+
+                  ),);
+       }
+         else if (response.statusCode == 401){
+                  showDialog(context: context, builder:(context) => AlertDialog(
+                   title: Text(" Warning",style: TextStyle(color: Colors.red)),
+                   content: Text(" The account was previously created"),
+                   actions: [TextButton(onPressed:() { Navigator.pop(context); ;}, child: Text("Ok"))],
+
+                  ),);
+       }
+            else if (response.statusCode == 422){
+                  showDialog(context: context, builder:(context) => AlertDialog(
+                   title: Text("Warning"),
+                   content: Text("Please enter the faileds"),
+                   actions: [TextButton(onPressed:() { Navigator.pop(context); ;}, child: Text("Ok"))],
+
+                  ),);
+       }
+       else{ showDialog(context: context, builder:(context) => AlertDialog(
+                  title: Text(" Error ",style: TextStyle(color: Colors.red),),
+                 content: Text("Server Error"),
+                  actions: [TextButton(onPressed:() { Navigator.pop(context); ;}, child: Text("Ok"))],));}
+                      var apiToken = data['token']; 
+                      shardpre!.setString("token", "$apiToken");
+    }
+
+
 @override
   void dispose() {
     animationController!.dispose();
@@ -55,7 +98,7 @@ showeyes(){
   Widget build(BuildContext context) {
 
       return Scaffold(backgroundColor: Colors.white,
-         body:SingleChildScrollView(
+         body: SingleChildScrollView(
       
             child:
             Padding(
@@ -104,7 +147,7 @@ showeyes(){
                  :Icon(Icons.visibility,size: 20,), onPressed: () {showeyes() ; },),
 
                  k:TextInputType.visiblePassword,controll:_pa,vaild: (Value) {
-                  if(Value!.isNotEmpty&&Value.length<5){
+                    if(Value!.isNotEmpty&&Value.length<5){
                     return "Password should not be less than five characters ";
                    
                   }
@@ -112,8 +155,19 @@ showeyes(){
               
          
                     
-     SizedBox(height: 20,),
-              botton(tb: " creat account   ", tap:  ()async {Get.off(showproduect());})])  ),
+           SizedBox(height: 20,),
+              botton(tb: " creat account   ", tap:  ()async {
+                if(_pa.text.length<5||!_ph.text.startsWith("09")){
+
+                      Get.off(registar());}
+                      
+                else{
+                    registar();
+                }
+                Get.off(showproduect());
+                
+               })])  ),
           )
       )
+
     ;}}

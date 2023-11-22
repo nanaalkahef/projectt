@@ -9,8 +9,10 @@ import 'package:get_storage/get_storage.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:projectt/help/botton.dart';
 import 'package:projectt/help/faild.dart';
+import 'package:projectt/main.dart';
 import 'package:projectt/registar.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:projectt/showproudect.dart';
 
 
 class login extends StatefulWidget  {
@@ -49,7 +51,46 @@ showeyes(){
     super.dispose();
 
   }
+    login()async{
+      final response =await http.post(Uri.parse("testpharma-project.000webhostapp.com/api/login"),body: {
 
+        "phone":_ph.text,
+        "password":_pa.text
+      });
+      final data=jsonDecode(response.body);
+
+       if (response.statusCode == 201){
+                  showDialog(context: context, builder:(context) => AlertDialog(
+                   title: Text(" informating "),
+                   content: Text("login Success"),
+                   actions: [TextButton(onPressed:() { Get.off(showproduect())  ;}, child: Text("Ok"))],
+
+                  ),);
+       }
+         else if (response.statusCode == 422){
+                  showDialog(context: context, builder:(context) => AlertDialog(
+                   title: Text("Warning"),
+                   content: Text("Please enter the faileds"),
+                   actions: [TextButton(onPressed:() { Navigator.pop(context); ;}, child: Text("Ok"))],
+
+                  ),);
+       }
+           else if (response.statusCode == 401){
+                  showDialog(context: context, builder:(context) => AlertDialog(
+                   title: Text("Warning"),
+                   content: Text("phone or password is incorrect !!!"),
+                   actions: [TextButton(onPressed:() { Navigator.pop(context); ;}, child: Text("Ok"))],
+
+                  ),);
+           }
+       else{ showDialog(context: context, builder:(context) => AlertDialog(
+                  title: Text(" Error "),
+                 content: Text("Server Error"),
+                  actions: [TextButton(onPressed:() { Navigator.pop(context); ;}, child: Text("Ok"))],));}
+
+                      var apiToken = data['token']; 
+                      shardpre!.setString("token", "$apiToken");
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -99,25 +140,35 @@ showeyes(){
                  :Icon(Icons.visibility,size: 20,), onPressed: () {showeyes() ; },),
 
                  k:TextInputType.visiblePassword,controll:_pa,vaild: (Value) {
-                  if(Value!.isNotEmpty&&Value.length<5){
-                    return "Password should not be less than five characters ";
-                   
-                  }
+              
                 },),
               
          
-                SizedBox(height: 10,),
+                SizedBox(height: 8,),
               
-              Row(children: [
+         FittedBox(child:    Row(
+            children: [
                 Text("if you dont have account please",style: TextStyle(fontSize:14,color:Colors.grey),),
-                SizedBox(width: 5,),
-                InkWell(onTap: (() {Get.off(registar());}),
+                SizedBox(width:6,),
+                InkWell(onTap: (() {
+                  Get.off(registar());
+                  
+                  ;}),
                   child: Text("click on",style: TextStyle(fontSize:15,fontWeight: FontWeight.bold,color: Colors.green[700]),),
-                )
-              ],),
+                ),
+                       ],),),
                     
-     SizedBox(height: 20,),
-              botton(tb: " login   ", tap:  ()async {})])  ),
+                   SizedBox(height: 20,),
+              botton(tb: " login   ", tap:  ()async {
+                    if(!_ph.text.startsWith("09")){
+                       Navigator.pop(context);}
+                
+                
+               else{
+                    login();}
+              
+
+              })])  ),
           )
       )
     ;}}

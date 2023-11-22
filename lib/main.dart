@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:projectt/help/midle.dart';
 import 'package:projectt/login.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
 
       initialRoute: "/log",
       getPages: [ 
-      GetPage(name: "/log", page: () => login())
+      GetPage(name: "/log", page: () => login(),middlewares: [midl()])
     ],
 
     );}}

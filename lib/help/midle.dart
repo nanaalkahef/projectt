@@ -8,7 +8,7 @@ class midl extends GetMiddleware{
 // ignore: body_might_complete_normally_nullable
 @override
  RouteSettings?  redirect (String? route){
-if(shardpre!.getString("token")!=null) return RouteSettings(name: "/three");
+if(shardpre?.getString("id")!=null) return RouteSettings(name: "/show");
 }
 
 

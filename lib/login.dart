@@ -13,6 +13,7 @@ import 'package:projectt/main.dart';
 import 'package:projectt/registar.dart';
 import 'package:http/http.dart' as http;
 import 'package:projectt/showproudect.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 
 class login extends StatefulWidget  {
@@ -35,11 +36,13 @@ showeyes(){
 }
 @override
   void initState() {
+    
     // TODO: implement initState
     super.initState();
     animationController=AnimationController(vsync: this,duration: Duration(microseconds: 600 ));
     fadinganimations=Tween<double>(begin:0.2,end: 1).animate(animationController!)..addListener(() {  setState(() {
       animationController?.repeat();
+      
       });
       });
    
@@ -52,7 +55,7 @@ showeyes(){
 
   }
     login()async{
-      final response =await http.post(Uri.parse("testpharma-project.000webhostapp.com/api/login"),body: {
+      final response =await http.post(Uri.https('testpharma-project.000webhostapp.com','/api/login'),body: {
 
         "phone":_ph.text,
         "password":_pa.text
@@ -60,36 +63,44 @@ showeyes(){
       final data=jsonDecode(response.body);
 
        if (response.statusCode == 201){
-                  showDialog(context: context, builder:(context) => AlertDialog(
-                   title: Text(" informating "),
-                   content: Text("login Success"),
-                   actions: [TextButton(onPressed:() { Get.off(showproduect())  ;}, child: Text("Ok"))],
+              Get.off(showproduect())  ;}
 
-                  ),);
-       }
+            
+       
          else if (response.statusCode == 422){
-                  showDialog(context: context, builder:(context) => AlertDialog(
-                   title: Text("Warning"),
-                   content: Text("Please enter the faileds"),
-                   actions: [TextButton(onPressed:() { Navigator.pop(context); ;}, child: Text("Ok"))],
-
-                  ),);
+              AwesomeDialog(
+              context: context,
+               dialogType: DialogType.error,
+            animType: AnimType.rightSlide,
+            title: 'Warning',
+            desc: 'Please enter the faileds',
+            btnOkOnPress: () {},
+            )..show();
        }
            else if (response.statusCode == 401){
-                  showDialog(context: context, builder:(context) => AlertDialog(
-                   title: Text("Warning"),
-                   content: Text("phone or password is incorrect !!!"),
-                   actions: [TextButton(onPressed:() { Navigator.pop(context); ;}, child: Text("Ok"))],
-
-                  ),);
+               AwesomeDialog(
+             context: context,
+            dialogType: DialogType.error,
+            animType: AnimType.rightSlide,
+            title: 'Error',
+            desc: 'phone or password is incorrect !!!',
+            btnOkOnPress: () {},
+            )..show();
            }
-       else{ showDialog(context: context, builder:(context) => AlertDialog(
-                  title: Text(" Error "),
-                 content: Text("Server Error"),
-                  actions: [TextButton(onPressed:() { Navigator.pop(context); ;}, child: Text("Ok"))],));}
+       else{  AwesomeDialog(
+             context: context,
+            dialogType: DialogType.error,
+            animType: AnimType.rightSlide,
+            title: 'Error',
+            desc: 'Server Error',
+
+            btnOkOnPress: () {},
+            )..show();}
 
                       var apiToken = data['token']; 
+                      print(apiToken);
                       shardpre!.setString("token", "$apiToken");
+                  
     }
 
   @override
@@ -125,7 +136,7 @@ showeyes(){
                 Text("login to your account",style: TextStyle(fontWeight: FontWeight.bold,fontSize:14,color: Colors.grey)),]) ,
                SizedBox(height: 20,),
                 filed(th:" user phone ",icon: Icon(Icons.phone),controll:_ph,osb:false,vaild:(Value) {
-                if(Value!.isNotEmpty&&!Value.startsWith("09")){
+                if(Value!.isNotEmpty&&(!Value.startsWith("09")||Value.length!=10)){
                     return "The number is invalid ";
                    
                   }
@@ -158,14 +169,29 @@ showeyes(){
                 ),
                        ],),),
                     
-                   SizedBox(height: 20,),
+              SizedBox(height: 20,),
               botton(tb: " login   ", tap:  ()async {
-                    if(!_ph.text.startsWith("09")){
-                       Navigator.pop(context);}
-                
-                
-               else{
-                    login();}
+                  
+
+
+                if(_pa.text.isEmpty||_ph.text.isEmpty){
+              AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            animType: AnimType.rightSlide,
+            title: 'Warning',
+            desc: 'Please enter the faileds',
+           
+            btnOkOnPress: () {},
+            )..show();
+       
+                }
+                 else if (!_ph.text.startsWith("09")||_ph.text.length>10){
+                      }
+                      
+                else{
+                    login();
+                }
               
 
               })])  ),

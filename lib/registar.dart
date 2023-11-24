@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 //import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -47,42 +48,41 @@ showeyes(){
 
 
     registar()async{
-      final response =await http.post(Uri.parse("testpharma-project.000webhostapp.com/api/register"),body: {
+      final response =await http.post(Uri.https('testpharma-project.000webhostapp.com','/api/register'),body: {
 
         "phone":_ph.text,
         "name":_na.text,
         "password":_pa.text
       });
-      final data=jsonDecode(response.body);
+      var data=jsonDecode(response.body);
 
        if (response.statusCode == 201){
-                  showDialog(context: context, builder:(context) => AlertDialog(
-                   title: Text(" informating ",style: TextStyle(color: Colors.green)),
-                   content: Text("creat Success"),
-                   actions: [TextButton(onPressed:() { Get.off(showproduect())  ;}, child: Text("Ok"))],
+            Get.off(showproduect())  ;}
 
-                  ),);
-       }
-         else if (response.statusCode == 401){
-                  showDialog(context: context, builder:(context) => AlertDialog(
-                   title: Text(" Warning",style: TextStyle(color: Colors.red)),
-                   content: Text(" The account was previously created"),
-                   actions: [TextButton(onPressed:() { Navigator.pop(context); ;}, child: Text("Ok"))],
 
-                  ),);
+         else if (response.statusCode ==200){
+            AwesomeDialog(
+            context: context,
+            dialogType: DialogType.info,
+            animType: AnimType.rightSlide,
+            title: 'Warning',
+            desc: 'The account was previously created',
+            btnOkOnPress: () {},
+            )..show();
+            
        }
-            else if (response.statusCode == 422){
-                  showDialog(context: context, builder:(context) => AlertDialog(
-                   title: Text("Warning"),
-                   content: Text("Please enter the faileds"),
-                   actions: [TextButton(onPressed:() { Navigator.pop(context); ;}, child: Text("Ok"))],
-
-                  ),);
+            
+       
+       else{      AwesomeDialog(
+             context: context,
+            dialogType: DialogType.error,
+            animType: AnimType.rightSlide,
+            title: 'Error',
+            desc: 'Server Error',
+            btnOkOnPress: () {},
+            )..show();
+    
        }
-       else{ showDialog(context: context, builder:(context) => AlertDialog(
-                  title: Text(" Error ",style: TextStyle(color: Colors.red),),
-                 content: Text("Server Error"),
-                  actions: [TextButton(onPressed:() { Navigator.pop(context); ;}, child: Text("Ok"))],));}
                       var apiToken = data['token']; 
                       shardpre!.setString("token", "$apiToken");
     }
@@ -132,7 +132,7 @@ showeyes(){
                 k: TextInputType.name,),
                SizedBox(height: 20,),
                 filed(th:" user phone ",icon: Icon(Icons.phone),controll:_ph,osb:false,vaild:(Value) {
-                if(Value!.isNotEmpty&&!Value.startsWith("09")){
+                if(Value!.isNotEmpty&&(!Value.startsWith("09")||Value.length!=10)){
                     return "The number is invalid ";
                    
                   }
@@ -155,19 +155,34 @@ showeyes(){
               
          
                     
-           SizedBox(height: 20,),
+         const SizedBox(height: 20,),
               botton(tb: " creat account   ", tap:  ()async {
-                if(_pa.text.length<5||!_ph.text.startsWith("09")){
+                
 
-                      Get.off(registar());}
+
+            if(_pa.text.isEmpty||_na.text.isEmpty||_ph.text.isEmpty){
+            AwesomeDialog(
+             context: context,
+            dialogType: DialogType.error,
+            animType: AnimType.rightSlide,
+            title: 'Warning',
+            desc: 'Please enter the faileds',
+         
+            btnOkOnPress: () {;},
+            )..show();
+                }
+              else if(!_ph.text.startsWith("09")||_ph.text.length!=10||_pa.text.length<5){
+                      }
                       
                 else{
                     registar();
                 }
-                Get.off(showproduect());
+              
                 
                })])  ),
           )
       )
 
     ;}}
+    
+     

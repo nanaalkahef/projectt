@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:projectt/help/midle.dart';
 import 'package:projectt/login.dart';
+import 'package:projectt/showproudect.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 SharedPreferences? shardpre;
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
 
 
       initialRoute: "/log",
-      getPages: [ 
+      getPages: [  GetPage(name: "/show", page: () => showproduect(),),
       GetPage(name: "/log", page: () => login(),middlewares: [midl()])
     ],
 

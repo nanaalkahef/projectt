@@ -7,13 +7,17 @@ import 'package:get_storage/get_storage.dart';
 import 'package:projectt/description.dart';
 import 'package:projectt/help/api/getproduect.dart';
 import 'package:projectt/help/api/produect.dart';
+import 'package:projectt/login.dart';
 import 'package:projectt/main.dart';
 
 class showproduect extends StatelessWidget{
-
+  
   @override
   Widget build(BuildContext context) {
   final produect p;
+  shardpre!.setString("id", "1");
+  var t=shardpre!.getString("token");
+  print(t);
    return Scaffold(
   backgroundColor:Colors.green[700],
  appBar: AppBar
@@ -22,8 +26,12 @@ class showproduect extends StatelessWidget{
 
  
  title: Text("Medicine",style: TextStyle(fontWeight: FontWeight.bold,fontSize:20),),
- actions: [IconButton(onPressed: (() {shardpre!.clear();
-   Get.offNamed("/login");
+ actions: [IconButton(onPressed: (()async {
+  
+   shardpre!.clear();
+   Get.off(login());
+
+
  }), icon:Icon(Icons.menu))],
  ),
    body: Column(
